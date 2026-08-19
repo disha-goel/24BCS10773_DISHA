@@ -1,0 +1,14 @@
+Create a Java program that demonstrates inheritance and interfaces.
+
+Requirements:
+Create an interface Drivable with a method void drive().
+
+Create a parent class Vehicle with brand and speed, a constructor, and a move() method.
+
+Create a child class Car that:
+Inherits from Vehicle
+Implements Drivable
+Has a seats property, a constructor, and a display() method
+Implements the drive() method
+
+In main, create a Car object and call move(), drive(), and display()
