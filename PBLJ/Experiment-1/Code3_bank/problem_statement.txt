@@ -1,0 +1,16 @@
+write a java program to implement a bank account class using encapsulation
+
+Create a class bank balance with 
+privatefields :account number(string)and balance(double)
+a constructor to initialize both fields
+a getbalance() method to return the balance 
+a setbalance doubleamount method with validation only set if amount>=0
+a deposit(double amount ) method :add to balance to alance if amont>0
+a withdraw (double amount ) method: subtract if amount >0 and <=balance
+
+in main method
+
+create bankaccount object with initial balance 
+call deposit(),withdraw(),and print final balance using getBalance()
+try direct access to balance(commented out) to show encapsulation
+
