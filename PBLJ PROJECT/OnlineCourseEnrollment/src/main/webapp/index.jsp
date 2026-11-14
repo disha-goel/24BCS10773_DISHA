@@ -3,83 +3,95 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Online Course Enrollment System</title>
+    <title>Student Course Registration Portal</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f1f5f9;
             margin: 0;
             padding: 0;
+            color: #1e293b;
         }
         .header {
-            background: #2c3e50;
+            background: #1e3a8a;
             color: white;
-            padding: 20px 40px;
+            padding: 24px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
         .header h1 {
             margin: 0;
-            font-size: 26px;
+            font-size: 24px;
+            font-weight: 600;
         }
         .container {
-            max-width: 700px;
+            max-width: 760px;
             margin: 60px auto;
             text-align: center;
+            background: white;
+            padding: 45px 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
         h2 {
-            color: #2c3e50;
+            color: #1e3a8a;
+            margin-top: 0;
+            font-size: 26px;
         }
         p {
-            color: #555;
+            color: #64748b;
             font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 35px;
         }
         .btn-group {
-            margin-top: 30px;
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 18px;
             flex-wrap: wrap;
         }
         .btn {
             display: inline-block;
-            padding: 14px 28px;
-            background: #2980b9;
+            padding: 13px 26px;
+            background: #2563eb;
             color: white;
             text-decoration: none;
             border-radius: 6px;
-            font-size: 16px;
-            transition: background 0.2s;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
         .btn:hover {
-            background: #1a6fa0;
+            background: #1d4ed8;
+            transform: translateY(-1px);
         }
         .btn.green {
-            background: #27ae60;
+            background: #16a34a;
         }
         .btn.green:hover {
-            background: #1e8449;
+            background: #15803d;
         }
         .btn.orange {
-            background: #e67e22;
+            background: #d97706;
         }
         .btn.orange:hover {
-            background: #ca6f1e;
+            background: #b45309;
         }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>Online Course Enrollment System</h1>
+    <h1>Student Course Registration Portal</h1>
 </div>
 
 <div class="container">
-    <h2>Welcome!</h2>
-    <p>Manage courses and student enrollments easily using the options below.</p>
+    <h2>Welcome to Course Registration</h2>
+    <p>A web-based course management system for browsing academic courses, adding new course offerings, and managing student enrollments.</p>
 
     <div class="btn-group">
-        <a href="addCourse" class="btn green">+ Add New Course</a>
-        <a href="enrollStudent" class="btn orange">Enroll a Student</a>
         <a href="viewCourses" class="btn">View All Courses</a>
+        <a href="enrollStudent" class="btn orange">Enroll a Student</a>
+        <a href="addCourse" class="btn green">+ Add New Course</a>
     </div>
 </div>
 

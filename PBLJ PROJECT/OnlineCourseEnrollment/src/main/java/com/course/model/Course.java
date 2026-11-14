@@ -60,7 +60,7 @@ public class Course {
     }
 
     public String display() {
-        return "Course [ID=" + courseId + ", Name=" + courseName + ", MaxSeats=" + maxSeats + ", Enrolled=" + enrolledStudents + ", Available=" + getAvailableSeats() + "]";
+        return "Course #" + courseId + ": " + courseName + " (" + enrolledStudents + "/" + maxSeats + " seats filled)";
     }
 
     @Override

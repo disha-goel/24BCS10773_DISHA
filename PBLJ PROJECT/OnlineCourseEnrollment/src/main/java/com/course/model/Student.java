@@ -30,7 +30,7 @@ public class Student {
     }
 
     public String display() {
-        return "Student [ID=" + studentId + ", Name=" + studentName + "]";
+        return "Student #" + studentId + " - " + studentName;
     }
 
     @Override

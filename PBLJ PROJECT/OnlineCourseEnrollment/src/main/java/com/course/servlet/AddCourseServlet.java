@@ -27,21 +27,21 @@ public class AddCourseServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        String courseName = request.getParameter("courseName");
-        String maxSeatsStr = request.getParameter("maxSeats");
+        String courseNameParam = request.getParameter("courseName");
+        String maxSeatsParam = request.getParameter("maxSeats");
 
         try {
-            int maxSeats = Integer.parseInt(maxSeatsStr);
-            courseService.addCourse(courseName, maxSeats);
+            int maxSeats = Integer.parseInt(maxSeatsParam);
+            courseService.addCourse(courseNameParam, maxSeats);
             response.sendRedirect(request.getContextPath() + "/viewCourses");
         } catch (NumberFormatException e) {
-            request.setAttribute("errorMessage", "Max seats must be a valid number.");
+            request.setAttribute("errorMessage", "Invalid format: Maximum seats must be an integer.");
             request.getRequestDispatcher("/addCourse.jsp").forward(request, response);
         } catch (IllegalArgumentException e) {
             request.setAttribute("errorMessage", e.getMessage());
             request.getRequestDispatcher("/addCourse.jsp").forward(request, response);
         } catch (Exception e) {
-            request.setAttribute("errorMessage", "Database error: " + e.getMessage());
+            request.setAttribute("errorMessage", "Unable to create course: " + e.getMessage());
             request.getRequestDispatcher("/addCourse.jsp").forward(request, response);
         }
     }

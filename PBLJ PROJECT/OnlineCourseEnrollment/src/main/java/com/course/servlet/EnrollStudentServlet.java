@@ -30,21 +30,22 @@ public class EnrollStudentServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        String studentIdStr = request.getParameter("studentId");
-        String studentName = request.getParameter("studentName");
-        String courseIdStr = request.getParameter("courseId");
+        String studentIdParam = request.getParameter("studentId");
+        String studentNameParam = request.getParameter("studentName");
+        String courseIdParam = request.getParameter("courseId");
 
         try {
-            int studentId = Integer.parseInt(studentIdStr);
-            int courseId = Integer.parseInt(courseIdStr);
+            int studentId = Integer.parseInt(studentIdParam);
+            int courseId = Integer.parseInt(courseIdParam);
 
-            courseService.enrollStudent(studentId, studentName, courseId);
+            courseService.enrollStudent(studentId, studentNameParam, courseId);
 
-            request.setAttribute("successMessage", "Student '" + (studentName != null ? studentName.trim() : "") + "' enrolled successfully!");
+            String studentDisplayName = studentNameParam != null ? studentNameParam.trim() : "Student";
+            request.setAttribute("successMessage", "Registration confirmed! " + studentDisplayName + " has been successfully enrolled.");
             request.getRequestDispatcher("/enroll.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
-            request.setAttribute("errorMessage", "Student ID and Course ID must be valid numbers.");
+            request.setAttribute("errorMessage", "Invalid numeric format: Student ID and Course ID must be numbers.");
             request.getRequestDispatcher("/enroll.jsp").forward(request, response);
 
         } catch (IllegalArgumentException e) {
@@ -64,7 +65,7 @@ public class EnrollStudentServlet extends HttpServlet {
             request.getRequestDispatcher("/enroll.jsp").forward(request, response);
 
         } catch (Exception e) {
-            request.setAttribute("errorMessage", "Database error: " + e.getMessage());
+            request.setAttribute("errorMessage", "System error while processing enrollment: " + e.getMessage());
             request.getRequestDispatcher("/enroll.jsp").forward(request, response);
         }
     }

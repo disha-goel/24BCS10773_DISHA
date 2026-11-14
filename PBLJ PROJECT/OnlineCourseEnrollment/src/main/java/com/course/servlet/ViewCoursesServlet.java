@@ -23,13 +23,13 @@ public class ViewCoursesServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            List<Course> courses = courseService.viewCourses();
-            List<Enrollment> enrollments = courseService.viewEnrollments();
+            List<Course> courseList = courseService.viewCourses();
+            List<Enrollment> enrollmentList = courseService.viewEnrollments();
 
-            request.setAttribute("courses", courses);
-            request.setAttribute("enrollments", enrollments);
+            request.setAttribute("courses", courseList);
+            request.setAttribute("enrollments", enrollmentList);
         } catch (Exception e) {
-            request.setAttribute("errorMessage", "Could not load data: " + e.getMessage());
+            request.setAttribute("errorMessage", "Error fetching records: " + e.getMessage());
         }
 
         request.getRequestDispatcher("/viewCourses.jsp").forward(request, response);

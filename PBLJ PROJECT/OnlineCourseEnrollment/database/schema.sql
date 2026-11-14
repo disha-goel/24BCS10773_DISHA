@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS Enrollment (
 );
 
 INSERT INTO Course (courseName, maxSeats, enrolledStudents) VALUES
-('Java Programming', 3, 0),
-('Web Development', 5, 0),
-('Data Structures', 2, 0);
+('CS201: Object Oriented Programming in Java', 40, 0),
+('CS202: Data Structures & Algorithms', 35, 0),
+('CS203: Database Management Systems', 30, 0),
+('CS204: Web Application Development', 25, 0);

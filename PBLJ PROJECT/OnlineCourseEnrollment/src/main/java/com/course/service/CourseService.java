@@ -18,12 +18,29 @@ public class CourseService {
     private StudentDAO studentDAO = new StudentDAO();
     private EnrollmentDAO enrollmentDAO = new EnrollmentDAO();
 
+    private boolean isDangerousInput(String text) {
+        if (text == null) {
+            return false;
+        }
+        String lower = text.toLowerCase();
+        return text.contains("<") || text.contains(">") || lower.contains("script") || lower.contains("javascript:") || lower.contains("onload") || lower.contains("onerror");
+    }
+
     public void addCourse(String courseName, int maxSeats) throws SQLException, IllegalArgumentException {
         if (courseName == null || courseName.trim().isEmpty()) {
             throw new IllegalArgumentException("Course name cannot be empty.");
         }
+        if (courseName.trim().length() < 2 || courseName.trim().length() > 100) {
+            throw new IllegalArgumentException("Course name must be between 2 and 100 characters.");
+        }
+        if (isDangerousInput(courseName)) {
+            throw new IllegalArgumentException("Invalid input: HTML or script injection tags are not permitted.");
+        }
         if (maxSeats <= 0) {
-            throw new IllegalArgumentException("Max seats must be greater than 0.");
+            throw new IllegalArgumentException("Maximum seats must be at least 1.");
+        }
+        if (maxSeats > 500) {
+            throw new IllegalArgumentException("Maximum seats cannot exceed 500.");
         }
 
         Course course = new Course(courseName.trim(), maxSeats);
@@ -34,27 +51,33 @@ public class CourseService {
             throws SQLException, CourseNotFoundException, DuplicateEnrollmentException, CourseFullException {
 
         if (studentId <= 0) {
-            throw new IllegalArgumentException("Student ID must be greater than 0.");
+            throw new IllegalArgumentException("Please provide a valid positive Student ID.");
         }
         if (studentName == null || studentName.trim().isEmpty()) {
             throw new IllegalArgumentException("Student name cannot be empty.");
         }
+        if (studentName.trim().length() < 2 || studentName.trim().length() > 100) {
+            throw new IllegalArgumentException("Student name must be between 2 and 100 characters.");
+        }
+        if (isDangerousInput(studentName)) {
+            throw new IllegalArgumentException("Invalid input: HTML or script injection tags are not permitted.");
+        }
         if (courseId <= 0) {
-            throw new IllegalArgumentException("Course ID must be greater than 0.");
+            throw new IllegalArgumentException("Please provide a valid positive Course ID.");
         }
 
         Course course = courseDAO.getCourseById(courseId);
         if (course == null) {
-            throw new CourseNotFoundException("Course with ID " + courseId + " was not found.");
+            throw new CourseNotFoundException("Course with ID " + courseId + " does not exist.");
         }
 
-        boolean isDuplicate = enrollmentDAO.checkDuplicateEnrollment(studentId, courseId);
-        if (isDuplicate) {
+        boolean alreadyEnrolled = enrollmentDAO.checkDuplicateEnrollment(studentId, courseId);
+        if (alreadyEnrolled) {
             throw new DuplicateEnrollmentException("Student " + studentName.trim() + " is already enrolled in " + course.getCourseName() + ".");
         }
 
         if (course.getEnrolledStudents() >= course.getMaxSeats()) {
-            throw new CourseFullException("Course '" + course.getCourseName() + "' is full. No seats available.");
+            throw new CourseFullException("Course '" + course.getCourseName() + "' is currently full (" + course.getMaxSeats() + " seats taken).");
         }
 
         studentDAO.getOrCreateStudent(studentId, studentName.trim());

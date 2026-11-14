@@ -2,17 +2,21 @@ package com.course.dao;
 
 import com.course.model.Enrollment;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EnrollmentDAO {
 
     public void enrollStudent(int studentId, int courseId) throws SQLException {
-        String sql = "INSERT INTO Enrollment (studentId, courseId) VALUES (?, ?)";
+        String query = "INSERT INTO Enrollment (studentId, courseId) VALUES (?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(query)) {
 
             ps.setInt(1, studentId);
             ps.setInt(2, courseId);
@@ -21,10 +25,10 @@ public class EnrollmentDAO {
     }
 
     public boolean checkDuplicateEnrollment(int studentId, int courseId) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM Enrollment WHERE studentId = ? AND courseId = ?";
+        String query = "SELECT COUNT(*) FROM Enrollment WHERE studentId = ? AND courseId = ?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(query)) {
 
             ps.setInt(1, studentId);
             ps.setInt(2, courseId);
@@ -38,27 +42,28 @@ public class EnrollmentDAO {
     }
 
     public List<Enrollment> getAllEnrollments() throws SQLException {
-        List<Enrollment> list = new ArrayList<>();
-        String sql = "SELECT e.enrollmentId, e.studentId, e.courseId, s.studentName, c.courseName " +
+        List<Enrollment> enrollmentList = new ArrayList<>();
+        String query = "SELECT e.enrollmentId, e.studentId, e.courseId, s.studentName, c.courseName " +
                 "FROM Enrollment e " +
                 "JOIN Student s ON e.studentId = s.studentId " +
-                "JOIN Course c ON e.courseId = c.courseId";
+                "JOIN Course c ON e.courseId = c.courseId " +
+                "ORDER BY e.enrollmentId DESC";
 
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                Enrollment en = new Enrollment(
+                Enrollment enrollment = new Enrollment(
                     rs.getInt("enrollmentId"),
                     rs.getInt("studentId"),
                     rs.getInt("courseId")
                 );
-                en.setStudentName(rs.getString("studentName"));
-                en.setCourseName(rs.getString("courseName"));
-                list.add(en);
+                enrollment.setStudentName(rs.getString("studentName"));
+                enrollment.setCourseName(rs.getString("courseName"));
+                enrollmentList.add(enrollment);
             }
         }
-        return list;
+        return enrollmentList;
     }
 }

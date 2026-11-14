@@ -58,7 +58,7 @@ public class Enrollment {
     }
 
     public String display() {
-        return "Enrollment [ID=" + enrollmentId + ", StudentID=" + studentId + ", CourseID=" + courseId + "]";
+        return "Enrollment #" + enrollmentId + ": Student #" + studentId + " in Course #" + courseId;
     }
 
     @Override

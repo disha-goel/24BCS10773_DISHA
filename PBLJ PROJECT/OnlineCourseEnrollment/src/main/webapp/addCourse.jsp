@@ -1,78 +1,107 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%!
+    private String sanitize(String input) {
+        if (input == null) return "";
+        return input.replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+                    .replace("\"", "&quot;")
+                    .replace("'", "&#x27;");
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add Course</title>
+    <title>Add Course - Registration Portal</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f1f5f9;
             margin: 0;
+            color: #1e293b;
         }
         .header {
-            background: #2c3e50;
+            background: #1e3a8a;
             color: white;
-            padding: 20px 40px;
+            padding: 22px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
         .header h1 {
             margin: 0;
             font-size: 22px;
+            font-weight: 600;
         }
         .container {
-            max-width: 480px;
+            max-width: 500px;
             margin: 50px auto;
             background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 35px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
         }
         h2 {
-            color: #2c3e50;
+            color: #1e3a8a;
             margin-top: 0;
+            font-size: 22px;
         }
         label {
             display: block;
-            margin-top: 15px;
-            font-weight: bold;
-            color: #333;
+            margin-top: 18px;
+            font-weight: 600;
+            color: #334155;
+            font-size: 14px;
         }
         input[type="text"], input[type="number"] {
             width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 11px;
+            margin-top: 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
             box-sizing: border-box;
             font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: #2563eb;
         }
         .btn {
-            margin-top: 20px;
-            padding: 11px 24px;
-            background: #27ae60;
+            margin-top: 24px;
+            padding: 12px 24px;
+            background: #16a34a;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             font-size: 15px;
+            font-weight: 500;
             cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
         }
         .btn:hover {
-            background: #1e8449;
+            background: #15803d;
         }
         .error {
-            color: #c0392b;
-            background: #fdecea;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 10px;
+            color: #991b1b;
+            background: #fee2e2;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            border-left: 4px solid #ef4444;
         }
-        .back {
-            display: inline-block;
-            margin-top: 15px;
-            color: #2980b9;
+        .nav-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+        .nav-links a {
+            color: #2563eb;
             text-decoration: none;
         }
-        .back:hover {
+        .nav-links a:hover {
             text-decoration: underline;
         }
     </style>
@@ -80,33 +109,35 @@
 <body>
 
 <div class="header">
-    <h1>Online Course Enrollment System</h1>
+    <h1>Student Course Registration Portal</h1>
 </div>
 
 <div class="container">
-    <h2>Add New Course</h2>
+    <h2>Add New Course Offering</h2>
 
     <%
         String error = (String) request.getAttribute("errorMessage");
         if (error != null && !error.isEmpty()) {
     %>
-        <div class="error"><%= error %></div>
+        <div class="error"><%= sanitize(error) %></div>
     <%
         }
     %>
 
     <form action="addCourse" method="post">
-        <label for="courseName">Course Name:</label>
-        <input type="text" id="courseName" name="courseName" placeholder="e.g. Java Programming" required />
+        <label for="courseName">Course Code &amp; Title:</label>
+        <input type="text" id="courseName" name="courseName" placeholder="e.g. CS205: Computer Networks" maxlength="100" required />
 
-        <label for="maxSeats">Maximum Seats:</label>
-        <input type="number" id="maxSeats" name="maxSeats" placeholder="e.g. 30" min="1" required />
+        <label for="maxSeats">Maximum Seat Capacity:</label>
+        <input type="number" id="maxSeats" name="maxSeats" placeholder="e.g. 35" min="1" max="500" required />
 
-        <button type="submit" class="btn">Add Course</button>
+        <button type="submit" class="btn">Register Course</button>
     </form>
 
-    <a href="viewCourses" class="back">View All Courses &rarr;</a><br>
-    <a href="index.jsp" class="back">&larr; Back to Home</a>
+    <div class="nav-links">
+        <a href="index.jsp">&larr; Back to Home</a>
+        <a href="viewCourses">View Courses &rarr;</a>
+    </div>
 </div>
 
 </body>

@@ -2,15 +2,18 @@ package com.course.dao;
 
 import com.course.model.Student;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class StudentDAO {
 
     public Student getStudentById(int studentId) throws SQLException {
-        String sql = "SELECT * FROM Student WHERE studentId = ?";
+        String query = "SELECT * FROM Student WHERE studentId = ?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(query)) {
 
             ps.setInt(1, studentId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -26,14 +29,14 @@ public class StudentDAO {
     }
 
     public Student getOrCreateStudent(int studentId, String studentName) throws SQLException {
-        Student existing = getStudentById(studentId);
-        if (existing != null) {
-            return existing;
+        Student existingStudent = getStudentById(studentId);
+        if (existingStudent != null) {
+            return existingStudent;
         }
 
-        String sql = "INSERT INTO Student (studentId, studentName) VALUES (?, ?)";
+        String query = "INSERT INTO Student (studentId, studentName) VALUES (?, ?)";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(query)) {
 
             ps.setInt(1, studentId);
             ps.setString(2, studentName);

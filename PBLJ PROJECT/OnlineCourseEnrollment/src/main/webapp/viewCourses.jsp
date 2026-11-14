@@ -2,32 +2,49 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.course.model.Course" %>
 <%@ page import="com.course.model.Enrollment" %>
+<%!
+    private String sanitize(String input) {
+        if (input == null) return "";
+        return input.replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+                    .replace("\"", "&quot;")
+                    .replace("'", "&#x27;");
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>View Courses</title>
+    <title>Course Catalog &amp; Enrollments</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f1f5f9;
             margin: 0;
+            color: #1e293b;
         }
         .header {
-            background: #2c3e50;
+            background: #1e3a8a;
             color: white;
-            padding: 20px 40px;
+            padding: 22px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
         .header h1 {
             margin: 0;
             font-size: 22px;
+            font-weight: 600;
         }
         .container {
-            max-width: 860px;
+            max-width: 920px;
             margin: 40px auto;
+            padding: 0 15px;
         }
         h2 {
-            color: #2c3e50;
+            color: #1e3a8a;
+            font-size: 20px;
+            margin-top: 35px;
+            margin-bottom: 15px;
         }
         table {
             width: 100%;
@@ -35,134 +52,147 @@
             background: white;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 30px;
         }
         th {
-            background: #2c3e50;
+            background: #1e3a8a;
             color: white;
-            padding: 12px 15px;
+            padding: 12px 16px;
             text-align: left;
+            font-size: 14px;
+            font-weight: 600;
         }
         td {
-            padding: 11px 15px;
-            border-bottom: 1px solid #eee;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #334155;
         }
         tr:last-child td {
             border-bottom: none;
         }
         tr:hover td {
-            background: #f7f9fc;
+            background: #f8fafc;
         }
         .badge-full {
-            background: #e74c3c;
+            background: #dc2626;
             color: white;
-            padding: 3px 8px;
+            padding: 3px 10px;
             border-radius: 12px;
             font-size: 12px;
+            font-weight: 500;
         }
         .badge-open {
-            background: #27ae60;
+            background: #16a34a;
             color: white;
-            padding: 3px 8px;
+            padding: 3px 10px;
             border-radius: 12px;
             font-size: 12px;
+            font-weight: 500;
         }
         .error {
-            color: #c0392b;
-            background: #fdecea;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-        .nav {
+            color: #991b1b;
+            background: #fee2e2;
+            padding: 12px;
+            border-radius: 6px;
             margin-bottom: 20px;
+            font-size: 14px;
+            border-left: 4px solid #ef4444;
+        }
+        .nav-bar {
+            margin-bottom: 25px;
             display: flex;
-            gap: 15px;
+            gap: 12px;
         }
         .btn {
-            padding: 10px 20px;
-            background: #2980b9;
+            padding: 10px 18px;
+            background: #2563eb;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 6px;
             font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
         }
         .btn:hover {
-            background: #1a6fa0;
+            background: #1d4ed8;
         }
         .btn.green {
-            background: #27ae60;
+            background: #16a34a;
         }
         .btn.green:hover {
-            background: #1e8449;
+            background: #15803d;
         }
         .btn.orange {
-            background: #e67e22;
+            background: #d97706;
         }
         .btn.orange:hover {
-            background: #ca6f1e;
+            background: #b45309;
         }
-        .empty {
-            color: #888;
+        .empty-message {
+            color: #64748b;
             font-style: italic;
-            padding: 15px;
+            padding: 16px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>Online Course Enrollment System</h1>
+    <h1>Student Course Registration Portal</h1>
 </div>
 
 <div class="container">
 
-    <div class="nav">
+    <div class="nav-bar">
         <a href="index.jsp" class="btn">&larr; Home</a>
-        <a href="addCourse" class="btn green">+ Add Course</a>
         <a href="enrollStudent" class="btn orange">Enroll Student</a>
+        <a href="addCourse" class="btn green">+ Add Course</a>
     </div>
 
     <%
         String error = (String) request.getAttribute("errorMessage");
         if (error != null && !error.isEmpty()) {
     %>
-        <div class="error"><%= error %></div>
+        <div class="error"><%= sanitize(error) %></div>
     <%
         }
     %>
 
-    <h2>All Courses</h2>
+    <h2>Available Courses</h2>
     <%
         List<Course> courses = (List<Course>) request.getAttribute("courses");
         if (courses == null || courses.isEmpty()) {
     %>
-        <p class="empty">No courses found. <a href="addCourse">Add one now.</a></p>
+        <p class="empty-message">No courses currently registered. <a href="addCourse">Add a new course now</a>.</p>
     <%
         } else {
     %>
     <table>
         <thead>
             <tr>
-                <th>Course ID</th>
-                <th>Course Name</th>
-                <th>Max Seats</th>
+                <th>ID</th>
+                <th>Course Code &amp; Title</th>
+                <th>Capacity</th>
                 <th>Enrolled</th>
                 <th>Available</th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
-        <% for (Course c : courses) { %>
+        <% for (Course course : courses) { %>
             <tr>
-                <td><%= c.getCourseId() %></td>
-                <td><%= c.getCourseName() %></td>
-                <td><%= c.getMaxSeats() %></td>
-                <td><%= c.getEnrolledStudents() %></td>
-                <td><%= c.getAvailableSeats() %></td>
+                <td><%= course.getCourseId() %></td>
+                <td><%= sanitize(course.getCourseName()) %></td>
+                <td><%= course.getMaxSeats() %></td>
+                <td><%= course.getEnrolledStudents() %></td>
+                <td><%= course.getAvailableSeats() %></td>
                 <td>
-                    <% if (c.getAvailableSeats() <= 0) { %>
+                    <% if (course.getAvailableSeats() <= 0) { %>
                         <span class="badge-full">Full</span>
                     <% } else { %>
                         <span class="badge-open">Open</span>
@@ -174,12 +204,12 @@
     </table>
     <% } %>
 
-    <h2>Enrollment Records</h2>
+    <h2>Active Enrollment Records</h2>
     <%
         List<Enrollment> enrollments = (List<Enrollment>) request.getAttribute("enrollments");
         if (enrollments == null || enrollments.isEmpty()) {
     %>
-        <p class="empty">No enrollments yet.</p>
+        <p class="empty-message">No student enrollments recorded yet.</p>
     <%
         } else {
     %>
@@ -190,17 +220,17 @@
                 <th>Student ID</th>
                 <th>Student Name</th>
                 <th>Course ID</th>
-                <th>Course Name</th>
+                <th>Course Title</th>
             </tr>
         </thead>
         <tbody>
-        <% for (Enrollment en : enrollments) { %>
+        <% for (Enrollment enrollment : enrollments) { %>
             <tr>
-                <td><%= en.getEnrollmentId() %></td>
-                <td><%= en.getStudentId() %></td>
-                <td><%= en.getStudentName() %></td>
-                <td><%= en.getCourseId() %></td>
-                <td><%= en.getCourseName() %></td>
+                <td><%= enrollment.getEnrollmentId() %></td>
+                <td><%= enrollment.getStudentId() %></td>
+                <td><%= sanitize(enrollment.getStudentName()) %></td>
+                <td><%= enrollment.getCourseId() %></td>
+                <td><%= sanitize(enrollment.getCourseName()) %></td>
             </tr>
         <% } %>
         </tbody>
