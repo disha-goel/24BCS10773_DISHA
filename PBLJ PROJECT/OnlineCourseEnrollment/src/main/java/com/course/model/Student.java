@@ -1,30 +1,34 @@
 package com.course.model;
 
-/**
- * Model class representing a Student entity.
- */
 public class Student {
 
     private int studentId;
     private String studentName;
 
-    // Default constructor
-    public Student() {}
+    public Student() {
+    }
 
-    // Parameterized constructor
     public Student(int studentId, String studentName) {
         this.studentId = studentId;
         this.studentName = studentName;
     }
 
-    // Getters and Setters
-    public int getStudentId() { return studentId; }
-    public void setStudentId(int studentId) { this.studentId = studentId; }
+    public int getStudentId() {
+        return studentId;
+    }
 
-    public String getStudentName() { return studentName; }
-    public void setStudentName(String studentName) { this.studentName = studentName; }
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
+    }
 
-    // Display method
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
     public String display() {
         return "Student [ID=" + studentId + ", Name=" + studentName + "]";
     }

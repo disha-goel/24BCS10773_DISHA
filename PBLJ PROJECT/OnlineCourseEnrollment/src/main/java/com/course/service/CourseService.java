@@ -12,26 +12,13 @@ import com.course.model.Enrollment;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * Service class containing business logic for the enrollment system.
- */
 public class CourseService {
 
-    private final CourseDAO courseDAO       = new CourseDAO();
-    private final StudentDAO studentDAO     = new StudentDAO();
-    private final EnrollmentDAO enrollmentDAO = new EnrollmentDAO();
+    private CourseDAO courseDAO = new CourseDAO();
+    private StudentDAO studentDAO = new StudentDAO();
+    private EnrollmentDAO enrollmentDAO = new EnrollmentDAO();
 
-    /**
-     * Adds a new course after basic validation.
-     *
-     * @param courseName name of the course
-     * @param maxSeats   maximum number of seats
-     * @throws SQLException on DB error
-     * @throws IllegalArgumentException if input is invalid
-     */
-    public void addCourse(String courseName, int maxSeats)
-            throws SQLException, IllegalArgumentException {
-
+    public void addCourse(String courseName, int maxSeats) throws SQLException, IllegalArgumentException {
         if (courseName == null || courseName.trim().isEmpty()) {
             throw new IllegalArgumentException("Course name cannot be empty.");
         }
@@ -43,69 +30,43 @@ public class CourseService {
         courseDAO.addCourse(course);
     }
 
-    /**
-     * Enrolls a student into a course.
-     * Business rules:
-     *   1. Course must exist.
-     *   2. Student must not already be enrolled.
-     *   3. Course must have available seats.
-     *
-     * @param studentId   ID of the student
-     * @param studentName name of the student
-     * @param courseId    ID of the course
-     * @throws SQLException                on DB error
-     * @throws CourseNotFoundException     if course does not exist
-     * @throws DuplicateEnrollmentException if student is already enrolled
-     * @throws CourseFullException         if no seats are available
-     */
     public void enrollStudent(int studentId, String studentName, int courseId)
-            throws SQLException, CourseNotFoundException,
-                   DuplicateEnrollmentException, CourseFullException {
+            throws SQLException, CourseNotFoundException, DuplicateEnrollmentException, CourseFullException {
 
-        // 1. Check course exists
+        if (studentId <= 0) {
+            throw new IllegalArgumentException("Student ID must be greater than 0.");
+        }
+        if (studentName == null || studentName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Student name cannot be empty.");
+        }
+        if (courseId <= 0) {
+            throw new IllegalArgumentException("Course ID must be greater than 0.");
+        }
+
         Course course = courseDAO.getCourseById(courseId);
         if (course == null) {
-            throw new CourseNotFoundException(
-                "Course with ID " + courseId + " was not found.");
+            throw new CourseNotFoundException("Course with ID " + courseId + " was not found.");
         }
 
-        // 2. Check duplicate enrollment
         boolean isDuplicate = enrollmentDAO.checkDuplicateEnrollment(studentId, courseId);
         if (isDuplicate) {
-            throw new DuplicateEnrollmentException(
-                "Student " + studentName + " is already enrolled in " + course.getCourseName() + ".");
+            throw new DuplicateEnrollmentException("Student " + studentName.trim() + " is already enrolled in " + course.getCourseName() + ".");
         }
 
-        // 3. Check seat availability
         if (course.getEnrolledStudents() >= course.getMaxSeats()) {
-            throw new CourseFullException(
-                "Course '" + course.getCourseName() + "' is full. No seats available.");
+            throw new CourseFullException("Course '" + course.getCourseName() + "' is full. No seats available.");
         }
 
-        // 4. Ensure student record exists
-        studentDAO.getOrCreateStudent(studentId, studentName);
+        studentDAO.getOrCreateStudent(studentId, studentName.trim());
 
-        // 5. Create enrollment and update seat count
         enrollmentDAO.enrollStudent(studentId, courseId);
         courseDAO.incrementEnrolledCount(courseId);
     }
 
-    /**
-     * Returns all courses from the database.
-     *
-     * @return list of Course objects
-     * @throws SQLException on DB error
-     */
     public List<Course> viewCourses() throws SQLException {
         return courseDAO.getAllCourses();
     }
 
-    /**
-     * Returns all enrollments with student and course details.
-     *
-     * @return list of Enrollment objects
-     * @throws SQLException on DB error
-     */
     public List<Enrollment> viewEnrollments() throws SQLException {
         return enrollmentDAO.getAllEnrollments();
     }

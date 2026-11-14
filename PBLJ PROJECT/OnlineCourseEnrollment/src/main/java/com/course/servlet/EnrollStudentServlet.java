@@ -13,15 +13,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-/**
- * Servlet that handles student enrollment into a course.
- * GET  -> shows the enroll.jsp form
- * POST -> processes enrollment
- */
 @WebServlet("/enrollStudent")
 public class EnrollStudentServlet extends HttpServlet {
 
-    private final CourseService courseService = new CourseService();
+    private CourseService courseService = new CourseService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -33,25 +28,27 @@ public class EnrollStudentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        request.setCharacterEncoding("UTF-8");
+
         String studentIdStr = request.getParameter("studentId");
-        String studentName  = request.getParameter("studentName");
-        String courseIdStr  = request.getParameter("courseId");
+        String studentName = request.getParameter("studentName");
+        String courseIdStr = request.getParameter("courseId");
 
         try {
-            // Parse IDs
             int studentId = Integer.parseInt(studentIdStr);
-            int courseId  = Integer.parseInt(courseIdStr);
+            int courseId = Integer.parseInt(courseIdStr);
 
-            // Delegate to service layer (all business logic lives there)
             courseService.enrollStudent(studentId, studentName, courseId);
 
-            // Success
-            request.setAttribute("successMessage",
-                "Student '" + studentName + "' enrolled successfully!");
+            request.setAttribute("successMessage", "Student '" + (studentName != null ? studentName.trim() : "") + "' enrolled successfully!");
             request.getRequestDispatcher("/enroll.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
             request.setAttribute("errorMessage", "Student ID and Course ID must be valid numbers.");
+            request.getRequestDispatcher("/enroll.jsp").forward(request, response);
+
+        } catch (IllegalArgumentException e) {
+            request.setAttribute("errorMessage", e.getMessage());
             request.getRequestDispatcher("/enroll.jsp").forward(request, response);
 
         } catch (CourseNotFoundException e) {

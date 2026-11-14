@@ -2,7 +2,7 @@ Online Course Enrollment System
 
 A Java Web Application built with JDBC + Servlets + JSP following the MVC pattern
 
-Features
+ Features
 
 | Feature                  | URL                  |
 |--------------------------|----------------------|
@@ -17,8 +17,6 @@ Business Rules
 - A student **cannot enroll twice** in the same course → `DuplicateEnrollmentException`
 - A course with **no available seats** cannot accept new enrollments → `CourseFullException`
 - Enrolling in a **non-existent course ID** → `CourseNotFoundException`
-
----
 
 Technologies Used
 

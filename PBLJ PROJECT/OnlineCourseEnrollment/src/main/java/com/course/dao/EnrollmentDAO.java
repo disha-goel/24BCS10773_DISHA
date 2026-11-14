@@ -6,14 +6,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO class for Enrollment-related database operations.
- */
 public class EnrollmentDAO {
 
-    /**
-     * Inserts a new enrollment record.
-     */
     public void enrollStudent(int studentId, int courseId) throws SQLException {
         String sql = "INSERT INTO Enrollment (studentId, courseId) VALUES (?, ?)";
 
@@ -26,10 +20,6 @@ public class EnrollmentDAO {
         }
     }
 
-    /**
-     * Checks if a student is already enrolled in a course.
-     * Returns true if duplicate enrollment exists.
-     */
     public boolean checkDuplicateEnrollment(int studentId, int courseId) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Enrollment WHERE studentId = ? AND courseId = ?";
 
@@ -47,16 +37,12 @@ public class EnrollmentDAO {
         return false;
     }
 
-    /**
-     * Retrieves all enrollments with student and course names (joined query).
-     */
     public List<Enrollment> getAllEnrollments() throws SQLException {
         List<Enrollment> list = new ArrayList<>();
-        String sql = "SELECT e.enrollmentId, e.studentId, e.courseId, " +
-                     "s.studentName, c.courseName " +
-                     "FROM Enrollment e " +
-                     "JOIN Student s ON e.studentId = s.studentId " +
-                     "JOIN Course c ON e.courseId = c.courseId";
+        String sql = "SELECT e.enrollmentId, e.studentId, e.courseId, s.studentName, c.courseName " +
+                "FROM Enrollment e " +
+                "JOIN Student s ON e.studentId = s.studentId " +
+                "JOIN Course c ON e.courseId = c.courseId";
 
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();

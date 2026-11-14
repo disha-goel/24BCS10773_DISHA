@@ -4,14 +4,8 @@ import com.course.model.Student;
 
 import java.sql.*;
 
-/**
- * DAO class for Student-related database operations.
- */
 public class StudentDAO {
 
-    /**
-     * Finds a student by ID. Returns null if not found.
-     */
     public Student getStudentById(int studentId) throws SQLException {
         String sql = "SELECT * FROM Student WHERE studentId = ?";
 
@@ -31,10 +25,6 @@ public class StudentDAO {
         return null;
     }
 
-    /**
-     * Inserts a new student if they don't already exist.
-     * Returns the existing or newly created student.
-     */
     public Student getOrCreateStudent(int studentId, String studentName) throws SQLException {
         Student existing = getStudentById(studentId);
         if (existing != null) {
